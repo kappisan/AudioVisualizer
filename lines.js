@@ -58,7 +58,7 @@ $(document).ready(function () {
            .attr('rx', (frequencyData[4]) / 12)
            .attr('ry', (frequencyData[4]/2) / 12);
 
-        updateData(800 - (frequencyData[170] * 5));
+        updateData(800 - (frequencyData[4] * 3), 800 - (frequencyData[170] * 3));
 
         drawCircle((Math.cos(toRadians(time)) * 400) + 600, 800 - (frequencyData[170] * 5));
         time++;
@@ -135,62 +135,55 @@ var linesvg = svg.append("g")
               "translate(" + margin.left + "," + margin.top + ")");
 
 
-var data = [];
+var bassData = [];
+var trebleData = [];
 var today = moment();
 
 for(var i = 0; i < 50; i++) {
-  data.push({date: parseDate(today.subtract(1, 'days').format('DD-MMM-YY')), close: 800});
+  bassData.push({date: parseDate(today.subtract(1, 'days').format('DD-MMM-YY')), close: 800});
+  trebleData.push({date: parseDate(today.format('DD-MMM-YY')), close: 800});
 }
 
-console.log('new  data', data);
+console.log('new  bassData', bassData);
 
 
 
 
 // Scale the range of the data
-x.domain(d3.extent(data, function(d) { return d.date; }));
+x.domain(d3.extent(bassData, function(d) { return d.date; }));
 y.domain([0, 800]);
 
 // Add the valueline path.
 linesvg.append("path")
-    .attr("class", "line")
-    .attr("d", valueline(data));
+    .attr("class", "line bassline")
+    .attr("d", valueline(bassData));
 
-// Add the X Axis
-/*
-linesvg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+linesvg.append("path")
+    .attr("class", "line trebleline")
+    .attr("d", valueline(trebleData));
 
-// Add the Y Axis
-linesvg.append("g")
-    .attr("class", "y axis")
-    .call(yAxis);
-*/
+function updateData(bassVal, trebleVal) {
 
+    if (!bassData || !trebleData || bassData == [] || trebleData == []) return;
 
-function updateData(newVal) {
-
-    if (!data || data == []) return;
-
-    for(var i = 0; i < (data.length - 1); i++) {
-      data[i].close = data[i+1].close;
+    for(var i = 0; i < (bassData.length - 1); i++) {
+      bassData[i].close = bassData[i+1].close;
+      trebleData[i].close = trebleData[i+1].close;
     }
 
-    data[data.length - 1].close = newVal;
+    bassData[bassData.length - 1].close = bassVal;
+    trebleData[trebleData.length - 1].close = trebleVal;
 
     // Select the section we want to apply our changes to
     var svg = d3.select("body").transition();
-/*
-    // Make the changes
-    svg.select(".line")   // change the line
-        .attr("d", valueline(data));
-*/
 
-linesvg.select("path")
-    .attr("class", "line")
-    .attr("d", valueline(data));
+    linesvg.select(".bassline")
+        .attr("class", "line bassline")
+        .attr("d", valueline(bassData));
+
+    linesvg.select(".trebleline")
+        .attr("class", "line trebleline")
+        .attr("d", valueline(trebleData));
 
 }
 
