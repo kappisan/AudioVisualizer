@@ -60,7 +60,12 @@ $(document).ready(function () {
 
         updateData(800 - (frequencyData[4] * 3), 800 - (frequencyData[170] * 3));
 
-        drawCircle((Math.cos(toRadians(time)) * 400) + 600, 800 - (frequencyData[170] * 5));
+
+        if ($("#rings-checkbox").is(':checked')) { 
+          drawCircle((Math.cos(toRadians(time)) * 400) + 600, 800 - (frequencyData[170] * 5)); 
+        }
+
+        
         time++;
   }
 
@@ -80,6 +85,7 @@ function particle() {
 }
 
 function drawCircle(x, y) {
+
     svg.insert("circle", "rect")
       .attr("cx", x)
       .attr("cy", y)
@@ -186,5 +192,119 @@ function updateData(bassVal, trebleVal) {
         .attr("d", valueline(trebleData));
 
 }
+
+
+/* sperm */
+
+  // Continuously loop and update chart with frequency data.
+
+  var width = svgWidth,
+      height = svgHeight;
+
+  var n = 100,
+      m = 12,
+      degrees = 180 / Math.PI;
+
+  var spermatozoa = d3.range(n).map(function() {
+    var x = Math.random() * width,
+        y = Math.random() * height;
+    return {
+      vx: Math.random() * 2 - 1,
+      vy: Math.random() * 2 - 1,
+      path: d3.range(m).map(function() { return [x, y]; }),
+      count: 0
+    };
+  });
+
+  var g = svg.selectAll("g")
+      .data(spermatozoa)
+    .enter().append("g");
+
+  var head = g.append("ellipse")
+      .attr("rx", 12.5)
+      .attr("ry", 6);
+
+  g.append("path")
+      .datum(function(d) { return d.path.slice(0, 3); })
+      .attr("class", "mid");
+
+  g.append("path")
+      .datum(function(d) { return d.path; })
+      .attr("class", "tail");
+
+  var tail = g.selectAll("path");
+
+  d3.timer(function() {
+    for (var i = -1; ++i < n;) {
+      var spermatozoon = spermatozoa[i],
+          path = spermatozoon.path,
+          dx = spermatozoon.vx,
+          dy = spermatozoon.vy,
+          x = path[0][0] += dx,
+          y = path[0][1] += dy,
+          speed = Math.sqrt(dx * dx + dy * dy),
+          count = speed * 10,
+          k1 = -5 - speed / 3;
+
+      // Bounce off the walls.
+      if (x < 0 || x > width) spermatozoon.vx *= -1;
+      if (y < 0 || y > height) spermatozoon.vy *= -1;
+
+      // Swim!
+      for (var j = 0; ++j < m;) {
+        var vx = x - path[j][0],
+            vy = y - path[j][1],
+            k2 = Math.sin(((spermatozoon.count += count) + j * 3) / 300) / speed;
+        path[j][0] = (x += dx / speed * k1) - dy * k2;
+        path[j][1] = (y += dy / speed * k1) + dx * k2;
+        speed = Math.sqrt((dx = vx) * dx + (dy = vy) * dy);
+        if(j % 19 == 0) { drawCircle(path[j][0], path[j][1]); }
+      }
+    }
+
+    head.attr("transform", headTransform);
+    tail.attr("d", tailPath);
+
+  });
+
+  function headTransform(d) {
+    return "translate(" + d.path[0] + ")rotate(" + Math.atan2(d.vy, d.vx) * degrees + ")";
+  }
+
+  function tailPath(d) {
+    return "M" + d.join("L");
+  }
+
+
+
+var i = 0;
+
+function particle() {
+  var m = d3.mouse(this);
+
+  drawCircle(m[0], m[1]);
+
+  d3.event.preventDefault();
+}
+
+function drawCircle(x, y) {
+    svg.insert("circle", "rect")
+      .attr("cx", x)
+      .attr("cy", y)
+      .attr("r", 1e-6)
+      .style("stroke", d3.hsl((i = (i + 1) % 360), 1, .5))
+      .style("stroke-opacity", 1)
+    .transition()
+      .duration(2000)
+      .ease(Math.sqrt)
+      .attr("r", 100)
+      .style("stroke-opacity", 1e-6)
+      .remove();
+}
+
+function toRadians(angle) {
+  return angle * (Math.PI / 180);
+}
+
 
 });

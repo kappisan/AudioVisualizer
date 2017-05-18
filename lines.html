@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>D3 Audio</title>
     <link rel="stylesheet" href="application.css" />
+    <link rel="stylesheet" href="toggle-switch.css" />
 
 <style>
 
@@ -90,6 +91,47 @@ text {
   right: 0;
 }
 
+
+ellipse {
+      animation: colorchange 50s infinite;
+      -webkit-animation: colorchange 50s infinite;
+      opacity: 0;
+}
+
+path {
+  fill: none;
+  animation: colorchangepath 50s infinite;
+  -webkit-animation: colorchangepath 50s infinite;
+  stroke-linecap: round;
+}
+
+.mid {
+  stroke-width: 4px;
+  opacity: 0;
+}
+
+.tail {
+  stroke-width: 2px;
+  opacity: 0;
+}
+
+
+
+
+
+
+.options-block {
+    width: 400px; 
+    display: inline-block;
+    color: #fff;
+    font-family: sans-serif;
+}
+
+button {
+  width: 400px;
+  height: 30px;
+}
+
 </style>
 
   </head>
@@ -108,6 +150,112 @@ text {
     <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
+    <div class="options-block">
+      <label class="switch-light switch-candy">
+        <input id="lines-checkbox" type="checkbox" onclick="toggleLines()" checked>
+
+        <strong>Tone Lines</strong>
+        <span>
+          <span>Off</span>
+          <span>On</span>
+          <a></a>
+        </span>
+      </label>
+    </div>
+
+    <div class="options-block">
+      <label class="switch-light switch-candy">
+        <input id="sperm-checkbox" type="checkbox" onclick="toggleSperm()">
+
+        <strong>Disco Sperm</strong>
+        <span>
+          <span>Off</span>
+          <span>On</span>
+          <a></a>
+        </span>
+      </label>
+    </div>
+
+    <div class="options-block">
+      <label class="switch-light switch-candy">
+        <input id="rings-checkbox" type="checkbox" onclick="toggleRings()">
+
+        <strong>Rings</strong>
+        <span>
+          <span>Off</span>
+          <span>On</span>
+          <a></a>
+        </span>
+      </label>
+    </div>
+
+    <div class="options-block">
+      <label class="switch-light switch-candy">
+        <input id="bars-checkbox" type="checkbox" onclick="toggleBars()" checked>
+
+        <strong>Bars</strong>
+        <span>
+          <span>Off</span>
+          <span>On</span>
+          <a></a>
+        </span>
+      </label>
+    </div>
+
     <script src="lines.js"></script>
+    <script>
+
+      function toggleSperm() {
+        console.log("toggleSperm", $("#sperm-checkbox").is(':checked'));
+        if ($("#sperm-checkbox").is(':checked')) {
+
+          d3.selectAll(".tail").style("opacity", 1);
+          d3.selectAll(".mid").style("opacity", 1);
+          d3.selectAll("ellipse").style("opacity", 1);
+
+        } else {
+
+          d3.selectAll(".tail").style("opacity", 0);
+          d3.selectAll(".mid").style("opacity", 0);
+          d3.selectAll("ellipse").style("opacity", 0);
+        }
+      }
+
+
+      function toggleLines() {
+        console.log("lines", $("#lines-checkbox").is(':checked'));
+        if ($("#lines-checkbox").is(':checked')) {
+
+          d3.selectAll(".bassline").style("opacity", 1);
+          d3.selectAll(".trebleline").style("opacity", 1);
+
+        } else {
+
+          d3.selectAll(".bassline").style("opacity", 0);
+          d3.selectAll(".trebleline").style("opacity", 0);
+        }
+      }
+
+
+      function toggleRings() {
+        console.log("rings", $("#rings-checkbox").is(':checked'));
+      }
+
+      function toggleBars() {
+        console.log("toggleBars", $("#bars-checkbox").is(':checked'));
+
+        if ($("#bars-checkbox").is(':checked')) {
+
+          d3.selectAll("rect").style("opacity", 1);
+
+        } else {
+
+          d3.selectAll("rect").style("opacity", 0);
+        }
+
+      }
+
+    </script>
   </body>
 </html>
