@@ -12,8 +12,8 @@ $(document).ready(function () {
   //var frequencyData = new Uint8Array(analyser.frequencyBinCount);
   var frequencyData = new Uint8Array(300);
 
-  var svgHeight = '800';
-  var svgWidth = '1600';
+  var svgHeight = '400';
+  var svgWidth = '500';
   var barPadding = '1';
   var time = 0;
 
@@ -51,7 +51,7 @@ $(document).ready(function () {
            return d;
         })
         .attr('fill', function(d) {
-           return 'rgb(255, 0, 0)';
+           return '#ef5229';
         });
 
         svg.selectAll('ellipse')
@@ -113,8 +113,8 @@ function toRadians(angle) {
 
 // Set the dimensions of the canvas / graph
 var margin = {top: 30, right: 20, bottom: 30, left: 50},
-    width = 2200 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom;
+    width = 600 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
 // Parse the date / time
 var parseDate = d3.time.format("%d-%b-%y").parse;
